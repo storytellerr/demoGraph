@@ -15,11 +15,11 @@ export class AppComponent {
   height: string;
   fusion;
   chart;
-  foods = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'}
-  ];
+  // graphTypes = [
+  //   {value: 'steak-0', viewValue: 'Steak'},
+  //   {value: 'pizza-1', viewValue: 'Pizza'},
+  //   {value: 'tacos-2', viewValue: 'Tacos'}
+  // ];
   @ViewChild('graph') someInput: ElementRef;
   constructor(private http: HttpClient) {
     this.type = 'timeseries';
