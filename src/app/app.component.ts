@@ -30,8 +30,8 @@ export class AppComponent {
       data: null,
       chart: {
         timeSpread: {
-          unit: 'day',
-          multiplier: 4
+          unit: 'year',
+          multiplier: 1
         },
         multiCanvas: false,
         showLegend: 1,
@@ -65,40 +65,29 @@ export class AppComponent {
         }
       }
     };
-    // this.fetchData();
+    this.fetchData();
   }
 
   // In this method we will create our DataStore and using that we will create a custom DataTable which takes two
   // parameters, one is data another is schema.
   fetchData() {
-    this.http.get(`http://localhost:9999/rest/spectrum/graph/813/0`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      })
-    }).subscribe((val: any) => {
-      console.log('done');
-      const data = val;
-      const schema = [{
-        'name': 'Time',
-        'type': 'date',
-        'format': '%d/%m/%y %H:%M:%S'
-      }, {
-        'name': 'Type',
-        'type': 'string'
-      },
-      {
-        'name': 'Flow Rate(mL/min)',
-        'type': 'number'
-      }];
-      // console.log(res[1]);
+    const jsonify = res => res.json();
+    const dataFetch = fetch(
+      'https://s3.eu-central-1.amazonaws.com/fusion.store/ft/data/area-chart-with-time-axis-data.json'
+    ).then(jsonify);
+    const schemaFetch = fetch(
+      'https://s3.eu-central-1.amazonaws.com/fusion.store/ft/schema/area-chart-with-time-axis-schema.json'
+    ).then(jsonify);
+
+    Promise.all([dataFetch, schemaFetch]).then(res => {
+      const data = res[0];
+      const schema = res[1];
       // First we are creating a DataStore
       const fusionDataStore = new FusionCharts.DataStore();
-      console.log(fusionDataStore);
       // After that we are creating a DataTable by passing our data and schema as arguments
       const fusionTable = fusionDataStore.createDataTable(data, schema);
       // Afet that we simply mutated our timeseries datasource by attaching the above
       // DataTable into its data property.
-      console.log(this.dataSource);
       this.dataSource.data = fusionTable;
     });
   }
@@ -115,34 +104,33 @@ export class AppComponent {
     // });
   }
 
-  // button() {
-  //   let i = 0;
-  //   const time = new Date(1582711218000);
-  //   const incrementor = setInterval(() => {
-  //     if (this.chart !== undefined) {
-  //       time.setSeconds(time.getSeconds() + 10);
-  //       // console.log(typeof(time.toLocaleString()));
-  //       const feed = '56';
-  //       const perm = '66';
-  //       const ret = '76';
+  buttonClick() {
+    let i = 0;
+    const time = new Date('2018-11-12');
+    const incrementor = setInterval(() => {
+      if (this.chart !== undefined) {
+        time.setDate(time.getDate() + 1);
+        // console.log(typeof(time.toLocaleString()));
+        let val: any = Math.floor(Math.random() * 100) + 20;
+        if (val > 30 && val < 70) {
+          val = 'N/A';
+        }
+        let formatedTime = time.toISOString();
+        formatedTime = formatedTime.split('T')[0];
+        // formatedTime = formatedTime.replace("", "");
+        // formatedTime = formatedTime.replace("/2020", "/20");
+        const a = [formatedTime, val];
+        console.log(a);
+        this.chart.feedData([
+         [formatedTime, val]
+        ]);
+        i++;
+        // console.log(this.chart);
+      }
+      // console.log(this.chart);
 
-  //       let formatedTime = time.toLocaleString();
-  //       formatedTime = formatedTime.replace(",", "");
-  //       formatedTime = formatedTime.replace("/2020", "/20");
-  //       const a = [formatedTime, 'Feed', feed];
-  //       console.log(a);
-  //       this.chart.feedData([
-  //         [formatedTime, 'Feed', feed],
-  //         [formatedTime, 'Permeate', perm],
-  //         [formatedTime, 'Retentate', ret]
-  //       ]);
-  //       i++;
-  //       // console.log(this.chart);
-  //     }
-  //     // console.log(this.chart);
-
-  //   }, 1000);
-  // }
+    }, 1000);
+  }
 
 }
 
