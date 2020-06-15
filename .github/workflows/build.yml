@@ -3,13 +3,16 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [12.0]
 
     steps:
       - uses: actions/checkout@v1
@@ -25,5 +28,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm ci and npm run build
+      - name: node and angular cli
+	run: npm install	
+	run:  npm install -g @angular/cli > /dev/null
+      - name: npm run build
         run: npm run build
