@@ -34,10 +34,10 @@ jobs:
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       env:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
+        host: 167.71.231.134
+        username: root
         port: 22
-        password: ${{ secrets.PASSWORD }}
+        password: BelatrixDigi2@a
       with:
         source: "./dist/"
         target: "/home/user/"
