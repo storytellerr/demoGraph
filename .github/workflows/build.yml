@@ -34,8 +34,8 @@ jobs:
     - name: copy file via ssh key
       uses: garygrossgarten/github-action-scp@release
       with:
-        local: test
-        remote: scp/directory
+        local: "./dist/"
+        remote: "/home/"
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
